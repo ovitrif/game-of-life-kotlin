@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GameOfLife</string>
+    <string name="main_start_button">Start Game</string>
+</resources>
