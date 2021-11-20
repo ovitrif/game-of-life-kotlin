@@ -1,6 +1,6 @@
 package com.masivotech.gameoflife.ui.domain
 
-class Game(val board: Board) {
+class Game(private val board: Board) {
 
     init {
         board.seed()
@@ -34,18 +34,5 @@ class Game(val board: Board) {
                 }
             }
         }
-    }
-
-    fun printBoard(): String {
-        var output = ""
-        for (cell in board.cells) {
-            output += "$cell "
-
-            if (cell.y == board.width - 1) {
-                output += "\n"
-            }
-        }
-
-        return output
     }
 }

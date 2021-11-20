@@ -54,6 +54,20 @@ class Board(
         }
     }
 
+    fun render(): String {
+        var output = ""
+
+        for (cell in cells) {
+            output += "$cell "
+
+            if (cell.y == width - 1) {
+                output += "\n"
+            }
+        }
+
+        return output
+    }
+
     private fun createRandomCellState(): CellState {
         val random = Random.nextInt(0, 2)
         return CellState.values()[random]
