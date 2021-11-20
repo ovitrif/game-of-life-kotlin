@@ -1,7 +1,5 @@
 package com.masivotech.gameoflife.ui.domain
 
-import kotlin.random.Random
-
 
 enum class CellState {
     LIVE,
@@ -22,76 +20,40 @@ data class Cell(
     }
 }
 
-class Board(
-    val width: Int = 10,
-    val height: Int = 10,
-) {
-    val cells: ArrayList<Cell> = ArrayList(width * height)
-}
-
-class Game {
-
-    val board = Board()
+class Game(val board: Board) {
 
     init {
-        seed()
-    }
-
-    private fun seed() {
-        if (board.cells.isNotEmpty()) throw IllegalStateException("Seed was already done")
-
-        repeat(board.width) { indexX ->
-            repeat(board.height) { indexY ->
-                board.cells.add(
-                    Cell(
-                        state = createRandomCellState(),
-                        x = indexX,
-                        y = indexY
-                    )
-                )
-            }
-        }
+        board.seed()
     }
 
     fun runGameRound() {
         for (x in 0 until board.width) {
             for (y in 0 until board.height) {
-                var cell = board.cells.find { cell -> cell.x == x && cell.y == y }
+                val cell = board.getCell(x, y)
                     ?: throw NullPointerException("Couldn't find cell on position [ x=$x y=$y ]")
-                cell = calculateNextCellState(cell)
+                val nextState = calculateNextCellState(cell)
+                TODO("Update cell state")
             }
         }
     }
 
-    fun calculateNextCellState(cell: Cell): Cell {
-        TODO()
-    }
+    fun calculateNextCellState(cell: Cell): CellState {
+        val numberOfLivingNeighbors = board.getCountOfLivingNeighbors(cell)
 
-    fun getCellNeighbors(cell: Cell): ArrayList<Cell> {
-        val neighbors = ArrayList<Cell>()
-
-        for (x in -1..1) {
-            for (y in -1..1) {
-                val neighborX = cell.x + x
-                val neighborY = cell.y + y
-                val neighborCell = getCell(neighborX, neighborY)
-
-                if (neighborCell != null && neighborCell != cell) {
-                    neighbors.add(neighborCell)
+        return when (cell.state) {
+            CellState.LIVE -> {
+                when (numberOfLivingNeighbors) {
+                    2, 3 -> CellState.LIVE
+                    else -> CellState.DEAD
+                }
+            }
+            CellState.DEAD -> {
+                when (numberOfLivingNeighbors == 3) {
+                    true -> CellState.LIVE
+                    else -> CellState.DEAD
                 }
             }
         }
-
-        return neighbors
-    }
-
-    private fun createRandomCellState(): CellState {
-        val random = Random.nextInt(0, 2)
-        return CellState.values()[random]
-    }
-
-    fun getCell(x: Int, y: Int): Cell? {
-        return board.cells.find { it.x == x && it.y == y }
     }
 
     fun printBoard(): String {

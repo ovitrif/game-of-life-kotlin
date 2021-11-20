@@ -1,75 +1,104 @@
 package com.masivotech.gameoflife.ui.domain
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class GameTest {
+
+    @Mock
+    private lateinit var board: Board
 
     private lateinit var game: Game
 
     @Before
     fun setUp() {
-        game = Game()
+        game = Game(board)
     }
 
     @Test
-    fun `verify board size`() {
-        println(game.printBoard())
+    fun `verify live cell with 2 live neighbors survives`() {
+        whenever(board.getCountOfLivingNeighbors(any())).thenReturn(2)
+        val cell = mockCell(CellState.LIVE)
 
-        assertThat(game.board.cells).hasSize(game.board.width * game.board.height)
+        val nextState = game.calculateNextCellState(cell)
+
+        assertThat(nextState).isEqualTo(CellState.LIVE)
     }
 
     @Test
-    fun `verify number of neighbors is 3 for cells at corners`() {
-        val cell1 = game.getCell(0, 0)!!
-        val neighborsCell1 = game.getCellNeighbors(cell1)
-        val cell2 = game.getCell(game.board.width - 1, 0)!!
-        val neighborsCell2 = game.getCellNeighbors(cell2)
-        val cell3 = game.getCell(0, game.board.height - 1)!!
-        val neighborsCell3 = game.getCellNeighbors(cell3)
-        val cell4 = game.getCell(game.board.width - 1, game.board.height - 1)!!
-        val neighborsCell4 = game.getCellNeighbors(cell4)
+    fun `verify live cell with 3 live neighbors survives`() {
+        whenever(board.getCountOfLivingNeighbors(any())).thenReturn(3)
+        val cell = mockCell(CellState.LIVE)
 
-        assertThat(neighborsCell1).hasSize(3)
-        assertThat(neighborsCell2).hasSize(3)
-        assertThat(neighborsCell3).hasSize(3)
-        assertThat(neighborsCell4).hasSize(3)
+        val nextState = game.calculateNextCellState(cell)
+
+        assertThat(nextState).isEqualTo(CellState.LIVE)
     }
-
 
     @Test
-    fun `verify number of neighbors is 5 for cells at edges excluding corners`() {
-        // verify cells on first row
-        for (x in 1 until game.board.width - 1) {
-            val cell = game.getCell(x, 0)!!
-            val neighbors = game.getCellNeighbors(cell)
+    fun `verify dead cell with 3 live neighbors becomes live`() {
+        whenever(board.getCountOfLivingNeighbors(any())).thenReturn(3)
+        val cell = mockCell(CellState.DEAD)
 
-            assertThat(neighbors).hasSize(5)
-        }
+        val nextState = game.calculateNextCellState(cell)
 
-        // verify cells on first column
-        for (y in 1 until game.board.height - 1) {
-            val cell = game.getCell(0, y)!!
-            val neighbors = game.getCellNeighbors(cell)
+        assertThat(nextState).isEqualTo(CellState.LIVE)
+    }
 
-            assertThat(neighbors).hasSize(5)
-        }
+    @Test
+    fun `verify live cell with less than 2 live neighbors dies`() {
+        for(liveNeighbors in 0..1) {
+            whenever(board.getCountOfLivingNeighbors(any())).thenReturn(liveNeighbors)
+            val cell = mockCell(CellState.LIVE)
 
-        // verify cells on last row
-        for (x in 1 until game.board.width - 1) {
-            val cell = game.getCell(x, game.board.height - 1)!!
-            val neighbors = game.getCellNeighbors(cell)
+            val nextState = game.calculateNextCellState(cell)
 
-            assertThat(neighbors).hasSize(5)
-        }
-
-        // verify cells on last column
-        for (y in 1 until game.board.height - 1) {
-            val cell = game.getCell(game.board.width - 1, y)!!
-            val neighbors = game.getCellNeighbors(cell)
-
-            assertThat(neighbors).hasSize(5)
+            assertThat(nextState).isEqualTo(CellState.DEAD)
         }
     }
+
+    @Test
+    fun `verify live cell with more than 3 live neighbors dies`() {
+        for(liveNeighbors in 4..8) {
+            whenever(board.getCountOfLivingNeighbors(any())).thenReturn(liveNeighbors)
+            val cell = mockCell(CellState.LIVE)
+
+            val nextState = game.calculateNextCellState(cell)
+
+            assertThat(nextState).isEqualTo(CellState.DEAD)
+        }
+    }
+
+    @Test
+    fun `verify dead cell with less than 3 live neighbor remains dead`() {
+        for(liveNeighbors in 0..2) {
+            whenever(board.getCountOfLivingNeighbors(any())).thenReturn(4)
+            val cell = mockCell(CellState.DEAD)
+
+            val nextState = game.calculateNextCellState(cell)
+
+            assertThat(nextState).isEqualTo(CellState.DEAD)
+        }
+    }
+
+    @Test
+    fun `verify dead cell with more than 3 live neighbor remains dead`() {
+        for(liveNeighbors in 4..8) {
+            whenever(board.getCountOfLivingNeighbors(any())).thenReturn(4)
+            val cell = mockCell(CellState.DEAD)
+
+            val nextState = game.calculateNextCellState(cell)
+
+            assertThat(nextState).isEqualTo(CellState.DEAD)
+        }
+    }
+
+    private fun mockCell(state: CellState) = Cell(state,0, 0)
 }
