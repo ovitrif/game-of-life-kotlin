@@ -1,5 +1,6 @@
 package com.masivotech.gameoflife.ui.domain
 
+import java.lang.IllegalStateException
 import kotlin.random.Random
 
 
@@ -32,7 +33,13 @@ class Game {
 
     val board = Board()
 
-    fun seed() {
+    init {
+        seed()
+    }
+
+    private fun seed() {
+        if (board.cells.isNotEmpty()) throw IllegalStateException("Seed was already done")
+
         repeat(board.width) { indexX ->
             repeat(board.height) { indexY ->
                 board.cells.add(
