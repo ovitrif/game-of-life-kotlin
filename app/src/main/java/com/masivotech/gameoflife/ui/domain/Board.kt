@@ -9,7 +9,7 @@ class Board(
     val width: Int = 10,
     val height: Int = 10,
 ) {
-    val cells: ArrayList<Cell> = ArrayList(width * height)
+    var cells: ArrayList<Cell> = ArrayList(width * height)
 
     fun getCountOfLivingNeighbors(cell: Cell): Int {
         return getCellNeighbors(cell).count { it.state == CellState.LIVE }
@@ -52,6 +52,10 @@ class Board(
                 )
             }
         }
+    }
+
+    fun update(nextState: ArrayList<Cell>) {
+        cells = nextState
     }
 
     fun render(): String {

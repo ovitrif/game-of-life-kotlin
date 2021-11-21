@@ -1,6 +1,7 @@
 package com.masivotech.gameoflife.ui.domain
 
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -98,6 +99,14 @@ class GameTest {
 
             assertThat(nextState).isEqualTo(CellState.DEAD)
         }
+    }
+
+    @Test
+    fun `verify next round updates board`() {
+        whenever(board.cells).thenReturn(arrayListOf())
+        game.advanceToNextGeneration()
+
+        verify(board).update(any())
     }
 
     private fun mockCell(state: CellState) = Cell(state,0, 0)

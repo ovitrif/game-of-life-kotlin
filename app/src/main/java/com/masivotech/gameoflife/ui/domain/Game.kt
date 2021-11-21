@@ -6,15 +6,21 @@ class Game(private val board: Board) {
         board.seed()
     }
 
-    fun runGameRound() {
+    fun advanceToNextGeneration() {
+        val nextRound = arrayListOf<Cell>()
+
         for (x in 0 until board.width) {
             for (y in 0 until board.height) {
                 val cell = board.getCell(x, y)
                     ?: throw NullPointerException("Couldn't find cell on position [ x=$x y=$y ]")
                 val nextState = calculateNextCellState(cell)
-                TODO("Update cell state")
+                nextRound.add(
+                    cell.copy(state = nextState)
+                )
             }
         }
+
+        board.update(nextRound)
     }
 
     fun calculateNextCellState(cell: Cell): CellState {
