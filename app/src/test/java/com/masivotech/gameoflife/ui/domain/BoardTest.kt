@@ -70,4 +70,16 @@ class BoardTest {
             assertThat(neighbors).hasSize(5)
         }
     }
+
+    @Test
+    fun `verify number of neighbors is 8 for all other cells`() {
+        for (x in 1 until board.width - 1) {
+            for (y in 1 until board.height - 1) {
+                val cell = board.getCell(x, y)!!
+                val neighbors = board.getCellNeighbors(cell)
+
+                assertThat(neighbors).hasSize(8)
+            }
+        }
+    }
 }
