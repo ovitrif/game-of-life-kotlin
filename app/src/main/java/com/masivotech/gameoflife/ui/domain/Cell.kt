@@ -12,8 +12,8 @@ data class Cell(
 ) {
     override fun toString(): String {
         return when (state) {
-            CellState.LIVE -> "🟩"
-            CellState.DEAD -> "🟥"
+            CellState.LIVE -> "X"
+            CellState.DEAD -> "O"
         }
     }
 }
