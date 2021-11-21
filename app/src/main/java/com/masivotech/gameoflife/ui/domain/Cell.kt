@@ -11,10 +11,9 @@ data class Cell(
     val y: Int,
 ) {
     override fun toString(): String {
-        val state = when (state) {
+        return when (state) {
             CellState.LIVE -> "🟩"
             CellState.DEAD -> "🟥"
         }
-        return "[x=$x, y=$y, $state]"
     }
 }

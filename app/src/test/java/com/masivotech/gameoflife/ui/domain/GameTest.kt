@@ -108,5 +108,18 @@ class GameTest {
         verify(board).update(any())
     }
 
+    @Test
+    fun `verify output`() {
+        var generation = 0
+        val seed = createRandomSeed(10, 10)
+        game = Game(Board(seed)) { output ->
+            generation++
+            assertThat(output).contains("Generation $generation")
+            print(output)
+        }
+
+        game.play(5)
+    }
+
     private fun mockCell(state: CellState) = Cell(state,0, 0)
 }

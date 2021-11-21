@@ -1,11 +1,28 @@
 package com.masivotech.gameoflife.ui.domain
 
-class Game(private val board: Board) {
+import androidx.annotation.VisibleForTesting
 
-    init {
-        board.seed()
+class Game(
+    private val board: Board,
+    private val onNewRoundListener: (String) -> Unit = {},
+) {
+    fun play(rounds: Int = 5) {
+        for (round in 1..rounds) {
+            advanceToNextGeneration()
+
+            onNewRoundListener.invoke(
+                renderGenerationOutput(round)
+            )
+        }
     }
 
+    private fun renderGenerationOutput(round: Int): String {
+        var output = "Generation $round\n"
+        output += "${board.render()}\n"
+        return output
+    }
+
+    @VisibleForTesting
     fun advanceToNextGeneration() {
         val nextRound = arrayListOf<Cell>()
 
@@ -23,6 +40,7 @@ class Game(private val board: Board) {
         board.update(nextRound)
     }
 
+    @VisibleForTesting
     fun calculateNextCellState(cell: Cell): CellState {
         val numberOfLivingNeighbors = board.getCountOfLivingNeighbors(cell)
 
