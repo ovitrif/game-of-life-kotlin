@@ -21,19 +21,19 @@ class BoardTest {
 
     @Test
     fun `verify number of neighbors is 3 for cells at corners`() {
-        val cell1 = board.getCell(0, 0)!!
-        val neighborsCell1 = board.getCellNeighbors(cell1)
-        val cell2 = board.getCell(board.width - 1, 0)!!
-        val neighborsCell2 = board.getCellNeighbors(cell2)
-        val cell3 = board.getCell(0, board.height - 1)!!
-        val neighborsCell3 = board.getCellNeighbors(cell3)
-        val cell4 = board.getCell(board.width - 1, board.height - 1)!!
-        val neighborsCell4 = board.getCellNeighbors(cell4)
+        val cellTopLeft = board.getCell(0, 0)!!
+        val neighborsCellTopLeft = board.getCellNeighbors(cellTopLeft)
+        val cellTopRight = board.getCell(board.width - 1, 0)!!
+        val neighborsCellTopRight = board.getCellNeighbors(cellTopRight)
+        val cellBottomLeft = board.getCell(0, board.height - 1)!!
+        val neighborsCellBottomLeft = board.getCellNeighbors(cellBottomLeft)
+        val cellBottomRight = board.getCell(board.width - 1, board.height - 1)!!
+        val neighborsCellBottomRight = board.getCellNeighbors(cellBottomRight)
 
-        assertThat(neighborsCell1).hasSize(3)
-        assertThat(neighborsCell2).hasSize(3)
-        assertThat(neighborsCell3).hasSize(3)
-        assertThat(neighborsCell4).hasSize(3)
+        assertThat(neighborsCellTopLeft).hasSize(3)
+        assertThat(neighborsCellTopRight).hasSize(3)
+        assertThat(neighborsCellBottomLeft).hasSize(3)
+        assertThat(neighborsCellBottomRight).hasSize(3)
     }
 
     @Test
