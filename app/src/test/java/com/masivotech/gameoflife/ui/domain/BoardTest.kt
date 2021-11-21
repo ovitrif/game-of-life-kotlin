@@ -10,8 +10,8 @@ class BoardTest {
 
     @Before
     fun setUp() {
-        board = Board()
-        board.seed()
+        val seed = createRandomSeed(10, 10)
+        board = Board(seed)
     }
 
     @Test

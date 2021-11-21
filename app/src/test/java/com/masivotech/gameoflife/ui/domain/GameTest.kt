@@ -103,7 +103,6 @@ class GameTest {
 
     @Test
     fun `verify next round updates board`() {
-        whenever(board.cells).thenReturn(arrayListOf())
         game.advanceToNextGeneration()
 
         verify(board).update(any())

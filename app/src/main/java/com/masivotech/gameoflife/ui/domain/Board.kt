@@ -2,14 +2,24 @@ package com.masivotech.gameoflife.ui.domain
 
 import androidx.annotation.VisibleForTesting
 import com.masivotech.gameoflife.testing.OpenForTesting
-import kotlin.random.Random
 
 @OpenForTesting
+@Suppress("LeakingThis")
 class Board(
+    seed: ArrayList<Cell>,
     val width: Int = 10,
     val height: Int = 10,
 ) {
-    var cells: ArrayList<Cell> = ArrayList(width * height)
+
+    lateinit var cells: ArrayList<Cell>
+
+    init {
+        if (validateSeed(seed)) {
+            cells = seed
+        } else {
+            throw IllegalArgumentException("Invalid seed")
+        }
+    }
 
     fun getCountOfLivingNeighbors(cell: Cell): Int {
         return getCellNeighbors(cell).count { it.state == CellState.LIVE }
@@ -38,22 +48,6 @@ class Board(
         return cells.find { it.x == x && it.y == y }
     }
 
-    fun seed() {
-        if (cells.isNotEmpty()) throw IllegalStateException("Seed was already done")
-
-        repeat(width) { indexX ->
-            repeat(height) { indexY ->
-                cells.add(
-                    Cell(
-                        state = createRandomCellState(),
-                        x = indexX,
-                        y = indexY
-                    )
-                )
-            }
-        }
-    }
-
     fun update(nextState: ArrayList<Cell>) {
         cells = nextState
     }
@@ -72,8 +66,11 @@ class Board(
         return output
     }
 
-    private fun createRandomCellState(): CellState {
-        val random = Random.nextInt(0, 2)
-        return CellState.values()[random]
+    private fun validateSeed(seed: ArrayList<Cell>): Boolean {
+        // TODO improve validation (e.g. validate value for cell positions)
+        return when {
+            seed.size != width * height -> false
+            else -> true
+        }
     }
 }
